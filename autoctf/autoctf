@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+import argparse
+import autoctf
+from autoctf import auto_check_flag,set_flag_regex
+
+
+def __main__():
+	parser = argparse.ArgumentParser()
+	parser.add_argument("challenge", type=str,help="url/file/string")
+	parser.add_argument("-f","--flag", type=str,help="regex to detect the flag",default=b"flag{[^{}]*}")
+	args = parser.parse_args()
+	set_flag_regex(args.flag)
+	auto_check_flag(args.challenge)
+
+__main__()
