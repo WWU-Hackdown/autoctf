@@ -1,5 +1,7 @@
 from .args import *
 import re
+found_flags = []
+
 
 def combine(*args):
 	r = []
@@ -22,9 +24,18 @@ def auto_check_flag(chal):
 		pass
 
 def check_flag(s:str):
+	global found_flags
 	from autoctf.args import get_flag_regex
 	m = re.search(get_flag_regex(),s)
 	if m:
-		print(m.group(0))
-		return m.group(0)
+		f = m.group(0)
+		print(f)
+		found_flags.append(f)
+		if get_stop():
+			exit(0)
+		return f 
 	return None
+
+def get_found_flags():
+	global found_flags
+	return found_flags
