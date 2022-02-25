@@ -49,17 +49,31 @@ def pipe_to_chr(data):
 	return nd
 
 def pipe_to_base64(data):
-	return base64.b64decode(''.join(data))
+	p = data
+	try:
+		p = base64.b64decode(data + b'=' * (-len(data) % 4))
+	except:
+		p = base64.b64decode(''.join(data) + '=' * (-len(data) % 4))
+	return p
 
 def pipe_to_base32(data):
-	return base64.b32decode(''.join(data))
+	p = data
+	try:
+		p = base64.b32decode(data+ b'=' * (-len(data) % 8))
+	except:
+		p = base64.b32decode(''.join(data)+ '=' * (-len(data) % 8))
+	#print(p)
+	return p
 
 
 def auto_check_flag_in_data_by_pipes(data,layer=10):
-	check_flag(''.join(pipe_to_str(data)).encode())
+	try:
+		check_flag(''.join(pipe_to_str(data)).encode())
+	except:
+		check_flag(data)
 	if layer ==0:
 		return data
-	for p in tqdm([pipe_to_chr,pipe_to_octal, pipe_to_chr,pipe_to_int,pipe_to_hex,pipe_str_combine,pipe_to_base64,pipe_to_base32,pipe_to_str], disable = layer!= 10):
+	for p in tqdm([pipe_to_base32,pipe_to_base64,pipe_to_chr,pipe_to_octal, pipe_to_chr,pipe_to_int,pipe_to_hex,pipe_str_combine,pipe_to_str], disable = layer!= 10):
 		try:
 			auto_check_flag_in_data_by_pipes(p(data),layer-1)
 		except:
